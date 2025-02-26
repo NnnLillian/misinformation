@@ -1,52 +1,56 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-		</view>
-	</view>
+  <view class="container">
+    <button @click="createRoom">创建房间</button>
+    <button @click="showJoinModal = true">加入房间</button>
+
+    <!-- 加入房间的模态框 -->
+    <JoinRoomModal
+      v-if="showJoinModal"
+      @close="showJoinModal = false"
+      @join="handleJoinRoom"
+    />
+  </view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
+<script setup>
+import { ref } from 'vue';
+import JoinRoomModal from '@/components/JoinRoomModal.vue';
 
-		},
-		methods: {
+const showJoinModal = ref(false); // 控制模态框显示
 
-		}
-	}
+// 创建房间
+const createRoom = () => {
+  const roomId = generateRoomId(); // 生成4位房间号
+  uni.navigateTo({
+    url: `/pages/room/room?roomId=${roomId}&isHost=true`, // 跳转到房间页面，并标记为房主
+  });
+};
+
+// 生成4位房间号
+const generateRoomId = () => {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+};
+
+// 处理加入房间
+const handleJoinRoom = (roomId) => {
+  uni.navigateTo({
+    url: `/pages/room/room?roomId=${roomId}&isHost=false`, // 跳转到房间页面，并标记为普通用户
+  });
+};
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
 </style>
