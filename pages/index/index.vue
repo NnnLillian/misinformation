@@ -22,6 +22,7 @@ const showJoinModal = ref(false); // 控制模态框显示
 const createRoom = () => {
   const roomId = generateRoomId(); // 生成4位房间号
   uni.navigateTo({
+    // url: `/pages/room/room`, // 跳转到房间页面，并标记为房主
     url: `/pages/room/room?roomId=${roomId}&isHost=true`, // 跳转到房间页面，并标记为房主
   });
 };
