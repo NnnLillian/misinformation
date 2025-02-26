@@ -2,7 +2,7 @@
   <view class="modal">
     <view class="modal-content">
       <input v-model="roomId" type="text" placeholder="请输入房间号" />
-      <button @click="handleConfirm">确认</button>
+      <button @click="handleConfirm">确认房间号</button>
       <button @click="handleClose">关闭</button>
     </view>
   </view>
