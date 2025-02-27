@@ -1,0 +1,7 @@
+{
+  "name": "createRoom",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

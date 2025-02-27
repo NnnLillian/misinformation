@@ -1,6 +1,6 @@
 {
     "name" : "misinformation",
-    "appid" : "",
+    "appid" : "__UNI__FDC0F4E",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxe0620af75ceca6ea",
         "setting" : {
             "urlCheck" : false
         },

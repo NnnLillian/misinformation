@@ -17,14 +17,27 @@ const emit = defineEmits(['join', 'close']);
 const roomId = ref(''); // 输入的房间号
 
 // 确认加入房间
-const handleConfirm = () => {
-  if (roomId.value.length === 4) {
-    emit('join', roomId.value); // 触发父组件的 join 事件
+const handleConfirm = async () => {
+  if (roomId.value.length !== 4) {
+    uni.showToast({ title: '房间号必须是4位数字', icon: 'none' });
+    return;
+  }
+
+  const openid = uni.getStorageSync('openid');
+  
+  // 调用云函数加入房间
+  const { result } = await uniCloud.callFunction({
+    name: 'joinRoom',
+    data: {
+      roomId: roomId.value,
+      userOpenId: openid,
+    },
+  });
+
+  if (result.success) {
+    emit('join', roomId.value); // 跳转到房间页面
   } else {
-    uni.showToast({
-      title: '房间号必须是4位数字',
-      icon: 'none',
-    });
+    uni.showToast({ title: result.message, icon: 'none' });
   }
 };
 
