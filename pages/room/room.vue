@@ -29,7 +29,7 @@ let watcher = null;
 onLoad(async (query) => {
 	roomId.value = query.roomId;
 	isHost.value = query.isHost === "true";
-
+	await getRoomInfo();
 	// 监听房间数据变化
 	const db = uniCloud.database();
 	watcher = db
@@ -68,17 +68,56 @@ onUnload(autoLeave);
 // 监听页面隐藏（小程序切换到后台）
 onHide(autoLeave);
 
+// 获取房间数据
+const getRoomInfo = async () => {
+	try {
+		const { result: roomData } = await uniCloud.callFunction({
+			name: "handleRoom",
+			data: {
+				action: "getRoom",
+				roomId: roomId.value,
+			},
+		});
+		hostOpenId.value = roomData.hostOpenId;
+		users.value = roomData.users;
+	} catch (err) {
+		uni.showToast({
+			title: "获取房间信息失败",
+			icon: "none",
+		});
+	}
+};
+
+// 加入房间
+const joinRoom = async () => {
+	try {
+		await uniCloud.callFunction({
+			name: "handleRoom",
+			data: {
+				action: "joinRoom",
+				roomId: roomId.value,
+				userOpenId: currentUserOpenId,
+			},
+		});
+	} catch (err) {
+		uni.showToast({
+			title: "加入房间失败",
+			icon: "none",
+		});
+	}
+};
+
 // 离开房间
 const leaveRoom = async () => {
 	try {
 		await uniCloud.callFunction({
-		name: "handleRoom",
-		data: {
-			action: "leaveRoom",
-			roomId: roomId.value,
-			userOpenId: currentUserOpenId
-		},
-	});
+			name: "handleRoom",
+			data: {
+				action: "leaveRoom",
+				roomId: roomId.value,
+				userOpenId: currentUserOpenId,
+			},
+		});
 
 		// 如果是房主且房间已空，删除房间
 		if (isHost.value && users.value.length === 1) {
@@ -94,37 +133,37 @@ const leaveRoom = async () => {
 
 // 在 room.vue 中
 const handleLeaveRoom = async () => {
-  await leaveRoom();
+	await leaveRoom();
 	uni.navigateBack();
 };
 </script>
 
 <style>
 .room-container {
-  padding: 20px;
+	padding: 20px;
 }
 
 .room-info {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .leave-btn {
-  background-color: #ff4444;
-  color: white;
-  margin-top: 10px;
+	background-color: #ff4444;
+	color: white;
+	margin-top: 10px;
 }
 
 .user-list {
-  margin-top: 20px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
+	margin-top: 20px;
+	border-top: 1px solid #eee;
+	padding-top: 10px;
 }
 
 .user-item {
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+	padding: 8px 0;
+	border-bottom: 1px solid #eee;
 }
 </style>

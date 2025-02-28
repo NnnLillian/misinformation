@@ -13,6 +13,11 @@ exports.main = async (event, context) => {
 		});
 	}
 
+  if(action==="getRoom"){
+    const { data: rooms } = await db.collection("rooms").where({ roomId }).get();
+    return rooms[0];
+  }
+
 	if (action === "joinRoom") {
 		// 查询房间是否存在
 		const { data: rooms } = await db.collection("rooms").where({ roomId }).get();
@@ -32,7 +37,7 @@ exports.main = async (event, context) => {
 			.doc(room._id)
 			.update({
 				data: {
-					users: _.push(userOpenId),
+					users: _.addToSet(userOpenId),
 				},
 			});
 	}
