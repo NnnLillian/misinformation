@@ -57,8 +57,9 @@ const createRoom = async () => {
   
   // 调用云函数创建房间
   await uniCloud.callFunction({
-    name: 'createRoom',
+    name: 'handleRoom',
     data: {
+		action:'createRoom',
       roomId,
       hostOpenId: openid,
     },
